@@ -2,12 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\ratchet\LivePusher;
 use App\ratchet\RatchetClient;
 use Illuminate\Console\Command;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 use React\EventLoop\Factory;
+use React\Socket\Server;
 
 class runServer extends Command
 {
@@ -43,18 +45,18 @@ class runServer extends Command
     public function handle()
     {
 
-        $loop=Factory::create();
-
-
-
-        $pusher=new LivePusher($loop);
-        $server=new \App\ratchet\RatchetClient();
-        $socket=new Server('0.0.0.0:9090',$loop);
-        $ioserver = new IoServer((new WsServer($server)),$socket,$loop);
-
-
-        $server->setPusher($pusher);
-        $pusher->publish('message');
+//        $loop=Factory::create();
+//
+//
+//
+//        $pusher=new LivePusher($loop);
+//        $server=new \App\ratchet\RatchetClient();
+//        $socket=new Server('0.0.0.0:9090',$loop);
+//        $ioserver = new IoServer((new WsServer($server)),$socket,$loop);
+//
+//
+//        $server->setPusher($pusher);
+//        $pusher->publish('message');
 
 
 //        $factory = new \Clue\React\Redis\Factory($loop);
@@ -108,6 +110,18 @@ class runServer extends Command
 //        });
 //        $client->end();
 
-        $loop->run();
+
+
+//        $loop->run();
+
+        $server = IoServer::factory(
+            new HttpServer(
+                new WsServer(
+                    new RatchetClient()
+                )
+            ),
+            1010
+        );
+        $server->run();
     }
 }

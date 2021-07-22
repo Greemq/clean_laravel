@@ -83,12 +83,13 @@
             Laravel
         </div>
         <div>
-            <button class="btn btn-primary" onclick="send()">Click me!!</button>
+            <button onclick="send()" >click me</button>
         </div>
     </div>
 </div>
 <script>
-    let conn = new WebSocket('ws://localhost:8080');
+    console.log('script run')
+    let conn = new WebSocket('ws://localhost:1010');
     conn.onopen = function (e) {
         console.log("Connection established!");
     };
@@ -97,12 +98,12 @@
         console.log(e.data);
     };
 
-
     function send() {
         console.log('clicked');
-        conn.send(Math.random());
+        let data = 'data ' + Math.random();
+        conn.send(data)
     }
-</script>
 
+</script>
 </body>
 </html>

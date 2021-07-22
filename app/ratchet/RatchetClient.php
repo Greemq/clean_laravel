@@ -21,7 +21,7 @@ class RatchetClient implements \Ratchet\MessageComponentInterface
     function onOpen(\Ratchet\ConnectionInterface $conn)
     {
         $this->clients->attach($conn);
-        Log::error('opened');
+        Log::error('opened '.$conn->resourceId);
 
     }
 
@@ -40,11 +40,12 @@ class RatchetClient implements \Ratchet\MessageComponentInterface
 
     function onMessage(\Ratchet\ConnectionInterface $from, $msg)
     {
-        Log::error($msg);
         foreach ($this->clients as $client) {
             if ($from !== $client) {
                 // The sender is not the receiver, send to each client connected
                 $client->send($msg);
+                Log::channel($msg);
+
             }
         }
 //        $this->pusher->publish($msg);
